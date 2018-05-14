@@ -34,11 +34,11 @@ import time
 import atexit
 
 def main():
-    
+
     #### Setup stepper motor ####
     # create a default object, no changes to I2C address or frequency
     mh = Adafruit_MotorHAT(addr = 0x60)
-    
+
     # recommended for auto-disabling motors on shutdown!
     def turnOffMotors():
         mh.getMotor(1).run(Adafruit_MotorHAT.RELEASE)
@@ -48,13 +48,11 @@ def main():
 
     atexit.register(turnOffMotors)
 
-    def moveStepper():
-        mh = Adafruit_MotorHAT(addr = 0x60)
-        myStepper = mh.getStepper(200, 1)  # 200 steps/rev, motor port #1
-        myStepper.setSpeed(30)             # 30 RPM
-        MyStepper.step(2, Adafruit_MotorHAT.FORWARD,  Adafruit_MotorHAT.SINGLE)
-    
-    #### Setup camera ####
+    mh = Adafruit_MotorHAT(addr = 0x60)
+    myStepper = mh.getStepper(200, 1)  # 200 steps/rev, motor port #1
+    myStepper.setSpeed(30)             # 30 RPM
+
+    #### setup camera ####
     """Face detection camera inference example."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -105,15 +103,14 @@ def main():
                 annotator.clear()
                 for face in faces:
                     annotator.bounding_box(transform(face.bounding_box), fill=0)
-                    # Print the (x, y) location of face 
+                    # Print the (x, y) location of face
                     print('X = %d, Y = %d' % (face.bounding_box[0], face.bounding_box[1]))
-                    
+
                     # Move stepper motor
                     print("Single coil steps")
-                    moveStepper()
+                    myStepper.step(2, Adafruit_MotorHAT.FORWARD,  Adafruit_MotorHAT.SINGLE)
 
-                    
-                    
+
                 annotator.update()
                 # print('Iteration #%d: num_faces=%d' % (i, len(faces)))
 
