@@ -80,7 +80,7 @@ def main():
         # Start the camera stream.
         camera.framerate = 30
         # Tempolary disable camera preview so that I can see the log on Terminal
-        # camera.start_preview()
+        camera.start_preview()
 
         # Annotator renders in software so use a smaller size and scale results
         # for increased performace.
@@ -107,9 +107,13 @@ def main():
                     print('X = %d, Y = %d' % (face.bounding_box[0], face.bounding_box[1]))
 
                     # Move stepper motor
-                    print("Single coil steps")
-                    myStepper.step(2, Adafruit_MotorHAT.FORWARD,  Adafruit_MotorHAT.SINGLE)
-
+                    
+                    if face.bounding_box[0] > 1640/2 and abs(face.bounding_box[0] - 1640/2) > 200:
+                        print("Double coil step - right")
+                        myStepper.step(10, Adafruit_MotorHAT.FORWARD,  Adafruit_MotorHAT.DOUBLE)
+                    elif face.bounding_box[0] < 1640/2 and abs(face.bounding_box[0] - 1640/2) > 300:
+                        print("Double coil step - left")
+                        myStepper.step(10, Adafruit_MotorHAT.BACKWARD,  Adafruit_MotorHAT.DOUBLE)
 
                 annotator.update()
                 # print('Iteration #%d: num_faces=%d' % (i, len(faces)))
